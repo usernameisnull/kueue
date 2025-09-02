@@ -6,6 +6,7 @@ FROM --platform=${BUILDPLATFORM} ${BUILDER_IMAGE} AS builder
 WORKDIR /workspace
 # fetch dependencies first, for iterative development
 COPY go.mod go.sum ./
+RUN go env -w GOPROXY='https://goproxy.cn,direct'
 RUN go mod download
 # copy the rest of the sources and build
 COPY . .

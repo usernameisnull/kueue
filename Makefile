@@ -69,6 +69,9 @@ YAML_PROCESSOR_LOG_LEVEL ?= info
 SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
+# mabing: 时间戳,用作镜像的tag
+TIMESTAMP := $(shell date +%Y%m%d%H%M%S)
+
 # Setting SED allows macos users to install GNU sed and use the latter
 # instead of the default BSD sed.
 ifeq ($(shell command -v gsed 2>/dev/null),)
@@ -282,8 +285,11 @@ image-local-build:
 
 # Build the multiplatform container image locally and push to repo.
 .PHONY: image-local-push
-image-local-push: PUSH=--push
+image-local-push: PUSH=--push # mabing: 仅当 make 在处理 image-local-push 这个目标（以及它的依赖）时，将变量 PUSH 的值设置为 --push。
 image-local-push: image-local-build
+
+.PHONY: image-local-push-daocloud
+image-local-push-daocloud: image-build-daocloud
 
 .PHONY: image-build
 image-build:
@@ -298,6 +304,19 @@ image-build:
 		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		$(PUSH) \
 		$(IMAGE_BUILD_EXTRA_OPTS) \
+		./
+
+.PHONY: image-build-daocloud
+image-build-daocloud:
+	docker build \
+		-t release-ci.daocloud.io/demo/kueue:$(TIMESTAMP) \
+		--platform=linux/amd64 \
+		--build-arg BASE_IMAGE=release-ci.daocloud.io/demo/static:nonroot \
+		--build-arg BUILDER_IMAGE=release-ci.daocloud.io/demo/golang:1.24 \
+		--build-arg CGO_ENABLED=$(CGO_ENABLED) \
+		--build-arg GIT_TAG=$(GIT_TAG) \
+		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
+		--push \
 		./
 
 .PHONY: image-push
