@@ -53,7 +53,7 @@ func SetupControllers(mgr ctrl.Manager, qManager *qcache.Manager, cc *schdcache.
 	if cfg.FairSharing != nil {
 		fairSharingEnabled = cfg.FairSharing.Enable
 	}
-
+	// mabing: ResourceFlavor简写为rf, AdmissionCheck简写为ac
 	watchers := []ClusterQueueUpdateWatcher{rfRec, acRec}
 	if features.Enabled(features.HierarchicalCohorts) {
 		cohortRec := NewCohortReconciler(mgr.GetClient(), cc, qManager, CohortReconcilerWithFairSharing(fairSharingEnabled))
