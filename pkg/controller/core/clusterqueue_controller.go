@@ -526,6 +526,8 @@ func (r *ClusterQueueReconciler) SetupWithManager(mgr ctrl.Manager, cfg *config.
 			MaxConcurrentReconciles: mgr.GetControllerOptions().GroupKindConcurrency[kueue.GroupVersion.WithKind("ClusterQueue").GroupKind().String()],
 		}).
 		Watches(&corev1.Namespace{}, &nsHandler).
+		// mabing: 就是r.snapUpdateCh里有数据写入的时候, 触发(h *cqSnapshotHandler) Generic? vendor/sigs.k8s.io/controller-runtime/pkg/source/source.go:217
+		WatchesRawSource(source.Channel(r.snapUpdateCh, &snapHandler)).
 		WatchesRawSource(source.Channel(r.nonCQObjectUpdateCh, &nonCQObjectHandler{})).
 		Complete(WithLeadingManager(mgr, r, &kueue.ClusterQueue{}, cfg))
 }
