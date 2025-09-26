@@ -16,6 +16,7 @@ https://github.com/openshift/kueue-operator, baize没有用到这个, 现在也�
 ## 文档
 - 官方文档: https://kueue.sigs.k8s.io/docs/overview/  
 - DeepWiki: https://deepwiki.com/kubernetes-sigs/kueue
+- 内部解读: [kueue源码摘要.md](kueue%E6%BA%90%E7%A0%81%E6%91%98%E8%A6%81.md)
 ### 翻译
 - fungibility
 ```txt
