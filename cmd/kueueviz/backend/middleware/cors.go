@@ -41,7 +41,7 @@ func validateOrigin(origin string) (string, bool) {
 	if err != nil {
 		return "", false
 	}
-
+	// mabing: 在values.yaml的默认值是'frontend.kueueviz.local', 命令行就会报Warning, 可能导致了后续Gin框架的panic
 	if u.Scheme != "http" && u.Scheme != "https" {
 		return "", false
 	}
