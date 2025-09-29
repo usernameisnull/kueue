@@ -285,7 +285,9 @@ image-local-build:
 
 # Build the multiplatform container image locally and push to repo.
 .PHONY: image-local-push
-image-local-push: PUSH=--push # mabing: 仅当 make 在处理 image-local-push 这个目标（以及它的依赖）时，将变量 PUSH 的值设置为 --push。
+# mabing: 仅当 make 在处理 image-local-push 这个目标（以及它的依赖）时，将变量 PUSH 的值设置为 --push。
+# 在 GNU Make 中，这种语法：叫做 Target-specific Variable Assignment（目标专属变量赋值）
+image-local-push: PUSH=--push
 image-local-push: image-local-build
 
 .PHONY: image-local-push-daocloud
@@ -490,6 +492,19 @@ kueueviz-image-build:
 		$(IMAGE_BUILD_EXTRA_OPTS) \
 		-f ./cmd/kueueviz/frontend/Dockerfile ./cmd/kueueviz/frontend
 
+# mabing: 只编译kueueviz的backend, 特别加了--pull=false, 避免本地有这个镜像, 依然要发起head请求, 用BuildKit的时候, --pull=false,不起作用
+kueueviz-backend-image-build:
+	$(IMAGE_BUILD_CMD) \
+		-t registry.cn-hangzhou.aliyuncs.com/edelweiss/kueueviz-backend:$(GIT_TAG) \
+		-t registry.cn-hangzhou.aliyuncs.com/edelweiss/kueueviz-backend:main \
+		--platform=linux/amd64 \
+		--build-arg BASE_IMAGE=registry.cn-hangzhou.aliyuncs.com/edelweiss/static:nonroot \
+		--build-arg BUILDER_IMAGE=registry.cn-hangzhou.aliyuncs.com/edelweiss/golang:1.24 \
+		--build-arg CGO_ENABLED=$(CGO_ENABLED) \
+		--pull=false \
+		--push \
+		$(IMAGE_BUILD_EXTRA_OPTS) \
+		-f ./cmd/kueueviz/backend/Dockerfile.local ./cmd/kueueviz/backend
 .PHONY: kueueviz-image-push
 kueueviz-image-push: PUSH=--push
 kueueviz-image-push: kueueviz-image-build
