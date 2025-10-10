@@ -142,3 +142,23 @@ To add a ClusterQueue to a cohort, specify the name of the cohort in the .spec.c
 ClusterQueue 可以分组到队列集团（cohort）中。属于同一队列集团的 ClusterQueue 可以相互借用未使用的配额.
 若要将 ClusterQueue 添加到某个队列集团，请在其规范（.spec.cohort）字段中指定该队列集团的名称。所有具有相同 spec.cohort值的 ClusterQueue 都属于同一个队列集团。如果 spec.cohort字段为空，则该 ClusterQueue 不属于任何队列集团，因此它无法从任何其他 ClusterQueue 借用配额.
 ```
+
+## github workflow
+### 发版
+流水线过程中会提一个pr: https://github.com/kubernetes-sigs/krew-index/pull/4919/ 去修改plugins/kueue.yaml里的版本号码
+
+### krew-release.yml
+- [krew-release.yml](.github/workflows/krew-release.yml)这个是发布kubectl-kueue插件的,依赖[.krew.yaml](.krew.yaml)
+- 流水线: https://github.com/kubernetes-sigs/kueue/actions/runs/18343139035/job/52243155690
+
+### openvex.yaml
+- [openvex.yaml](.github/workflows/openvex.yaml)这个是漏洞检测/安全相关的
+- 流水线: https://github.com/kubernetes-sigs/kueue/actions/runs/18363028342/job/52310276240
+
+### sbom.yaml
+用到了[setup-bom](https://github.com/kubernetes-sigs/release-actions/tree/main/setup-bom)来引入了一个action.yml, 然后上传了一个kueue-v0.13.6.spdx.json这样的物料清单到release里
+- [sbom.yaml](.github/workflows/sbom.yaml)调用了bom这个命令来生成项目的物料清单, 主要作用就是提高项目的透明度
+- 流水线: https://github.com/kubernetes-sigs/kueue/actions/runs/18363034142/job/52310291827
+
+### release页面的几个yaml
+[NEW_RELEASE.md](.github/ISSUE_TEMPLATE/NEW_RELEASE.md)里提到有个步骤`make artifacts IMAGE_REGISTRY=registry.k8s.io/kueue GIT_TAG=$VERSION`, 好像都是手动发布的, 有点意外
