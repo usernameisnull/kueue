@@ -314,7 +314,7 @@ image-build-daocloud:
 		-t release-ci.daocloud.io/demo/kueue:$(TIMESTAMP) \
 		--platform=linux/amd64 \
 		--build-arg BASE_IMAGE=release-ci.daocloud.io/demo/static:nonroot \
-		--build-arg BUILDER_IMAGE=release-ci.daocloud.io/demo/golang:1.24 \
+		--build-arg BUILDER_IMAGE=release-ci.daocloud.io/demo/golang:1.25 \
 		--build-arg CGO_ENABLED=$(CGO_ENABLED) \
 		--build-arg GIT_TAG=$(GIT_TAG) \
 		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
