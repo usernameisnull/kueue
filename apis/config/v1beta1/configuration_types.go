@@ -82,6 +82,7 @@ type Configuration struct {
 	// integrations (including K8S job).
 	Integrations *Integrations `json:"integrations,omitempty"`
 
+	// ||||
 	// QueueVisibility is configuration to expose the information about the top
 	// pending workloads.
 	// Deprecated: This field will be removed on v1beta2, use VisibilityOnDemand
@@ -412,6 +413,7 @@ type Integrations struct {
 	// List of GroupVersionKinds that are managed for Kueue by external controllers;
 	// the expected format is `Kind.version.group.com`.
 	ExternalFrameworks []string `json:"externalFrameworks,omitempty"`
+	// ||||
 	// PodOptions defines kueue controller behaviour for pod objects
 	// Deprecated: This field will be removed on v1beta2, use ManagedJobsNamespaceSelector
 	// (https://kueue.sigs.k8s.io/docs/tasks/run/plain_pods/)

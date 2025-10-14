@@ -27,7 +27,7 @@ const (
 	DefaultLocalQueueName kueue.LocalQueueName = "default"
 
 	// QueueAnnotation is the annotation key in the workload that holds the queue name.
-	//
+	// ||||
 	// Deprecated: Use QueueLabel as a label key.
 	QueueAnnotation = QueueLabel
 
