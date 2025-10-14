@@ -1,3 +1,11 @@
+## examples
+examples链接到`site/static/examples`, Goland里没有办法自动跳转, 
+
+## 资源简写
+- rf: ResourceFlavor
+- ac: AdmissionCheck
+- cq: ClusterQueue
+- lq: LocalQueue
 ## 部署
 - baize只有一个kueue-controller-manager的deployment
 ### 部署原生的kueue
