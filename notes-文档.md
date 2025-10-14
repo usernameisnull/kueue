@@ -1,3 +1,17 @@
+## 主要资源的关系
+直接执行`k apply -f site/static/examples/admin/single-clusterqueue-setup.yaml`,就会生成Flavor,ClusterQueue,LocalQueue
+### flavor(资源规格)
+一种对象，用于定义集群中可用的计算资源，并通过将工作负载与特定节点类型关联，实现细粒度的资源管理。https://kueue.sigs.k8s.io/zh-cn/docs/concepts/resource_flavor/
+### ClusterQueue(集群队列)
+- 一个集群范围的资源对象，用于管理一组资源池，定义使用上限和公平共享规则。https://kueue.sigs.k8s.io/zh-cn/docs/concepts/cluster_queue/
+- `spec.resourceGroups[0].flavors`里需要指定1个或多个flavor
+### LocalQueue(本地队列)
+- 命名空间资源，用于将属于单个租户的紧密相关的工作负载进行分组。https://kueue.sigs.k8s.io/zh-cn/docs/concepts/local_queue/. 
+- 在`spec.clusterQueue`里指向一个`CluterQueue`
+### Workloads
+- 在创建带有`kueue.x-k8s.io/queue-name: user-queue`标签的资源的时候会创建workloads, 这里的`user-queue`应该是localqueue
+- 如果在上一步还没有创建localqueue, 那么对应的资源(比如job)就会suspended, 在创建了对应的localqueue后就会un-suspended
+
 ## 文档
 - 官方文档: https://kueue.sigs.k8s.io/docs/overview/, 官方文档站在`site/content`目录里
 - DeepWiki: https://deepwiki.com/kubernetes-sigs/kueue
@@ -21,7 +35,7 @@ A core design principle for Kueue is to avoid duplicating mature functionality i
 Kueue 的一个核心设计原则是避免重复造轮子，不去实现 Kubernetes 组件和成熟的第三方控制器里已经具备的功能。自动扩缩容、Pod 到节点的调度以及作业生命周期管理，分别由 cluster-autoscaler、kube-scheduler 和 kube-controller-manager 负责。更高级的准入控制可以交给像 gatekeeper 这样的控制器来处理。
 ```
 - cohort
-  Cohort的意思是一群具有共同特征的人或事物, 在这个项目里
+  Cohort的意思是一群具有共同特征的人或事物, 在这个项目里的中文被翻译为: 队列组
 ```txt
 ClusterQueues can be grouped in cohorts. ClusterQueues that belong to the same cohort can borrow unused quota from each other.
 To add a ClusterQueue to a cohort, specify the name of the cohort in the .spec.cohort field. All ClusterQueues that have a matching spec.cohort are part of the same cohort. If the spec.cohort field is empty, the ClusterQueue doesn’t belong to any cohort, and thus it cannot borrow quota from any other ClusterQueue
