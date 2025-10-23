@@ -11,6 +11,7 @@
 ### Workloads
 - 在创建带有`kueue.x-k8s.io/queue-name: user-queue`标签的资源的时候会创建workloads, 这里的`user-queue`应该是localqueue
 - 如果在上一步还没有创建localqueue, 那么对应的资源(比如job)就会suspended, 在创建了对应的localqueue后就会un-suspended
+- 有了workloads, 才会有后续的资源?
 
 ## 文档
 - 官方文档: https://kueue.sigs.k8s.io/docs/overview/, 官方文档站在`site/content`目录里
