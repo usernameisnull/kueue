@@ -513,6 +513,7 @@ func (r *ClusterQueueReconciler) SetupWithManager(mgr ctrl.Manager, cfg *config.
 		qManager: r.qManager,
 		cache:    r.cache,
 	}
+	// mabing: 很多地方都用到了TypedControllerManagedBy,这个起什么作用?
 	return builder.TypedControllerManagedBy[reconcile.Request](mgr).
 		Named("clusterqueue_controller").
 		WatchesRawSource(source.TypedKind(

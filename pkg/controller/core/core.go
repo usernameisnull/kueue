@@ -34,6 +34,8 @@ const (
 
 // SetupControllers sets up the core controllers. It returns the name of the
 // controller that failed to create and an error, if any.
+// mabing: 一共调用了6个资源的SetupWithManager,分别是: ResourceFlavor, AdmissionCheck, LocalQueue, Cohort, ClusterQueue, Workload
+// mabing:
 func SetupControllers(mgr ctrl.Manager, qManager *qcache.Manager, cc *schdcache.Cache, cfg *configapi.Configuration) (string, error) {
 	rfRec := NewResourceFlavorReconciler(mgr.GetClient(), qManager, cc)
 	if err := rfRec.SetupWithManager(mgr, cfg); err != nil {
@@ -71,7 +73,10 @@ func SetupControllers(mgr ctrl.Manager, qManager *qcache.Manager, cc *schdcache.
 		WithFairSharing(fairSharingEnabled),
 		WithWatchers(watchers...),
 	)
+	// mabing: 这个作用是什么? 都最终向ClusterQueueReconciler.nonCQObjectUpdateCh这个channel发送了消息
+	// mabing: 将ClusterQueueReconciler(cqRec)添加为ResourceFlavorReconciler(rfRec)的观察者。当ResourceFlavor资源被创建、更新或删除时，ResourceFlavorReconciler会调用ClusterQueueReconciler的NotifyResourceFlavorUpdate方法来通知它这些变化
 	rfRec.AddUpdateWatcher(cqRec)
+	// mabing: 将ClusterQueueReconciler(cqRec)添加为AdmissionCheckReconciler(acRec)的观察者。当AdmissionCheck资源被创建、更新或删除时，AdmissionCheckReconciler会调用ClusterQueueReconciler的NotifyAdmissionCheckUpdate方法来通知它这些变化。
 	acRec.AddUpdateWatchers(cqRec)
 	if err := cqRec.SetupWithManager(mgr, cfg); err != nil {
 		return "ClusterQueue", err
